@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_fix">
+    <sys_script_fix action="INSERT_OR_UPDATE">
+        <before>false</before>
+        <description/>
+        <name>Remove Groups and Roles of Inactive User</name>
+        <record_for_rollback>false</record_for_rollback>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/ ) {
+    var gr = new GlideRecord('sys_user');
+	
+    gr.addQuery('active', 'false');
+    gr.query();
+    while (gr.next()) {
+        var gr_group = new GlideRecord('sys_user_grmember');
+        gr_group.addQuery('user', gr.sys_id);
+
+        gr_group.query();
+        while (gr_group.next()) {
+
+            gr_group.user = ""; //remove user from group
+            gr_group.update();
+        }
+
+        	var role = new GlideRecord('sys_user_has_role');
+        role.addQuery('user', current.sys_id);
+
+        role.query();
+        while (role.next()) {
+           role.user = ""; //remove inherited = false role for uses 
+           role.update();
+        }
+
+    }
+
+})(current, previous);]]></script>
+        <sys_class_name>sys_script_fix</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-06-16 16:40:03</sys_created_on>
+        <sys_id>d8a02eb607c41110cd16f2ae7c1ed011</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Remove Groups and Roles of Inactive User</sys_name>
+        <sys_package display_value="Wish List" source="x_503666_wish_list">c5e3127a07841110cd16f2ae7c1ed051</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Wish List">c5e3127a07841110cd16f2ae7c1ed051</sys_scope>
+        <sys_update_name>sys_script_fix_d8a02eb607c41110cd16f2ae7c1ed011</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-06-16 16:40:03</sys_updated_on>
+        <unloadable>false</unloadable>
+    </sys_script_fix>
+</record_update>
